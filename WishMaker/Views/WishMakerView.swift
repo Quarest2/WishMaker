@@ -24,15 +24,17 @@ final class WishMakerView: UIView {
     private var isToggleButtonPinnedToStack = true
     
     // MARK: - Callbacks
-    var onColorChange: ((UIColor) -> Void)?
+    var onColorChange: (() -> Void)?
     var onToggleButtonPressed: (() -> Void)?
     var onWishButtonPressed: (() -> Void)?
+    var onScheduleButtonPressed: (() -> Void)?
     
     // MARK: - Properties
     var redSliderValue: Float { sliderRed.slider.value }
     var greenSliderValue: Float { sliderGreen.slider.value }
     var blueSliderValue: Float { sliderBlue.slider.value }
     var alphaSliperValue = Constants.alphaValue
+    var interfaceColor = UIColor()
     
     // MARK: - Initializer
     init() {
@@ -46,13 +48,19 @@ final class WishMakerView: UIView {
     }
     
     // MARK: - Public Methods
-    func updateTextColor(to color: UIColor) {
-        titleView.textColor = color
-        descr.textColor = color
+    func updateTextColor() {
+        titleView.textColor = interfaceColor.inverted()
+        descr.textColor = interfaceColor.inverted()
     }
     
-    func updateBackgroundColor(to color: UIColor) {
-        backgroundColor = color
+    func updateBackgroundColor() {
+        backgroundColor = interfaceColor
+    }
+    
+    func updateButtonTextColor() {
+        toggleButton.titleLabel?.textColor = interfaceColor
+        addWishButton.titleLabel?.textColor = interfaceColor
+        scheduleWishButton.titleLabel?.textColor = interfaceColor
     }
     
     func setStackVisibility(isHidden: Bool) {
@@ -61,16 +69,18 @@ final class WishMakerView: UIView {
     
     func updateButtonTitle(isHidden: Bool) {
         toggleButton.setTitle(isHidden ? Constants.buttonTitleShow : Constants.buttonTitleHide, for: .normal)
+        toggleButton.setTitleColor(interfaceColor, for: .normal)
     }
     
     // MARK: - Private Methods
     private func configureUI() {
-        backgroundColor = UIColor(
+        interfaceColor = UIColor(
             red: Constants.colorValue,
             green: Constants.colorValue,
             blue: Constants.colorValue,
             alpha: Constants.alphaValue
         )
+        backgroundColor = interfaceColor
         configureTitle()
         configureDescription()
         configureSceduleWishesButton()
@@ -119,7 +129,7 @@ final class WishMakerView: UIView {
     
     private func configureToggleButton() {
         toggleButton.setTitle(Constants.buttonTitleHide, for: .normal)
-        toggleButton.setTitleColor(Constants.buttonTitleColor, for: .normal)
+        toggleButton.setTitleColor(interfaceColor, for: .normal)
         toggleButton.backgroundColor = Constants.buttonBackgroundColor
         toggleButton.layer.cornerRadius = Constants.stackRadius
         toggleButton.layer.borderWidth = Constants.borderWidth
@@ -135,7 +145,7 @@ final class WishMakerView: UIView {
     
     private func configureAddWishButton() {
         addWishButton.backgroundColor = Constants.buttonBackgroundColor
-        addWishButton.setTitleColor(Constants.wishButtonTitleColor, for: .normal)
+        addWishButton.setTitleColor(interfaceColor, for: .normal)
         addWishButton.setTitle(Constants.wishButtonText, for: .normal)
         addWishButton.layer.cornerRadius = Constants.stackRadius
         addWishButton.layer.borderWidth = Constants.borderWidth
@@ -149,11 +159,11 @@ final class WishMakerView: UIView {
     
     private func configureSceduleWishesButton() {
         scheduleWishButton.backgroundColor = Constants.buttonBackgroundColor
-        scheduleWishButton.setTitleColor(Constants.scheduleButtonTitleColor, for: .normal)
+        scheduleWishButton.setTitleColor(interfaceColor, for: .normal)
         scheduleWishButton.setTitle(Constants.scheduleButtonText, for: .normal)
         scheduleWishButton.layer.cornerRadius = Constants.stackRadius
         scheduleWishButton.layer.borderWidth = Constants.borderWidth
-        //scheduleWishButton.addTarget(self, action: #selector(wishButtonPressed), for: .touchUpInside)
+        scheduleWishButton.addTarget(self, action: #selector(scheduleWishButtonPressed), for: .touchUpInside)
         
         addSubview(scheduleWishButton)
         scheduleWishButton.setHeight(Constants.buttonHeight)
@@ -162,12 +172,13 @@ final class WishMakerView: UIView {
     }
     
     private func notifyColorChange() {
-        onColorChange?(UIColor(
+        interfaceColor = UIColor(
             red: CGFloat(redSliderValue),
             green: CGFloat(greenSliderValue),
             blue: CGFloat(blueSliderValue),
             alpha: Constants.alphaValue
-        ))
+        )
+        onColorChange?()
     }
     
     @objc private func toggleButtonPressed() {
@@ -191,5 +202,9 @@ final class WishMakerView: UIView {
     
     @objc private func wishButtonPressed() {
         onWishButtonPressed?()
+    }
+    
+    @objc private func scheduleWishButtonPressed() {
+        onScheduleButtonPressed?()
     }
 }

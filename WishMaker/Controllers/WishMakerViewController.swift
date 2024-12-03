@@ -25,8 +25,8 @@ final class WishMakerViewController: UIViewController {
     
     // MARK: - Private Methods
     private func configureCallbacks() {
-        wishMakerView.onColorChange = { [weak self] color in
-            self?.updateBackgroundAndTextColor(to: color)
+        wishMakerView.onColorChange = { [weak self] in
+            self?.updateBackgroundAndTextColor()
         }
         
         wishMakerView.onToggleButtonPressed = { [weak self] in
@@ -36,18 +36,17 @@ final class WishMakerViewController: UIViewController {
         wishMakerView.onWishButtonPressed = { [weak self] in
             self?.addWish()
         }
+        
+        wishMakerView.onScheduleButtonPressed = { [weak self] in
+            self?.calendar()
+        }
+
     }
     
-    private func updateBackgroundAndTextColor(to color: UIColor? = nil) {
-        let backgroundColor = color ?? UIColor(
-            red: CGFloat(wishMakerView.redSliderValue),
-            green: CGFloat(wishMakerView.greenSliderValue),
-            blue: CGFloat(wishMakerView.blueSliderValue),
-            alpha: CGFloat(wishMakerView.alphaSliperValue)
-        )
-        
-        wishMakerView.updateBackgroundColor(to: backgroundColor)
-        wishMakerView.updateTextColor(to: backgroundColor.inverted())
+    private func updateBackgroundAndTextColor() {
+        wishMakerView.updateBackgroundColor()
+        wishMakerView.updateTextColor()
+        wishMakerView.updateButtonTextColor()
     }
     
     private func toggleStackVisibility() {
@@ -58,5 +57,9 @@ final class WishMakerViewController: UIViewController {
     
     private func addWish() {
         present(WishStoringViewController(), animated: true)
+    }
+    
+    private func calendar() {
+        present(WishCalendarViewController(), animated: true)
     }
 }

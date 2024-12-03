@@ -90,6 +90,18 @@ enum Constants {
     
     // MARK: - Animation Constants
     static let animationDuration: TimeInterval = 0.5
+    
+    //MARK: - WishCalendarViewController Constants
+    static let contentInset: UIEdgeInsets = UIEdgeInsets.init()
+    static let collectionTop: CGFloat = 30
+    
+    //MARK: - WishEventCell Constants
+    static let offset: CGFloat = 5
+    static let cornerRadius: CGFloat = 20
+    static let backgroundColor: UIColor = .white
+    static let titleTop: CGFloat = 30
+    static let titleFont: UIFont = UIFont()
+    static let titleLeading: CGFloat = 20
 }
 
 
